@@ -7,10 +7,15 @@ const submitBugReport = async (req, res) => {
 
   try {
     // Send the bug report to the Python ML service for processing
+    //console.log(req.body);
     const simulatedResponse = {
         status: 'bug_detected',
         confidence: 0.95,
       };
+      const custom_response = {
+        description: req.body.description,
+      }
+      console.log(custom_response)
       res.status(200).send(simulatedResponse);
     // const response = await axios.post('http://localhost:5000/predict', bugReport);
     // res.status(200).send(response.data);
