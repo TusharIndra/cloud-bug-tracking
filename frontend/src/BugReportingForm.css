@@ -1,75 +1,43 @@
-.bug-reporting-container {
+.bug-report-result-container {
     max-width: 600px;
     margin: 50px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  .form-title {
+  .result-title {
     text-align: center;
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 28px;
+    color: #222;
+    margin-bottom: 25px;
   }
   
-  .form-step {
-    margin-bottom: 20px;
+  .result-details {
+    margin-bottom: 25px;
   }
   
-  .form-label {
+  .result-details p {
+    font-size: 18px;
+    margin: 15px 0;
+  }
+  
+  .back-btn {
     display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #555;
-  }
-  
-  .form-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .form-navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .btn {
-    padding: 10px 20px;
+    margin: 0 auto;
+    padding: 12px 24px;
     font-size: 16px;
     color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .prev-btn {
-    background-color: #6c757d;
-  }
-  
-  .prev-btn:hover {
-    background-color: #5a6268;
-  }
-  
-  .next-btn {
     background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
   }
   
-  .next-btn:hover {
+  .back-btn:hover {
     background-color: #0056b3;
-  }
-  
-  .submit-btn {
-    background-color: #28a745;
-  }
-  
-  .submit-btn:hover {
-    background-color: #218838;
+    transform: scale(1.05);
   }

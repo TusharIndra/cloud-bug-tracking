@@ -11,14 +11,12 @@ const submitBugReport = async (req, res) => {
     const simulatedResponse = {
         status: 'bug_detected',
         confidence: 0.95,
+        severity: 'p1'
       };
-      const custom_response = {
-        description: req.body.description,
-      }
-      console.log(custom_response)
+      console.log(req.body);
       res.status(200).send(simulatedResponse);
-    // const response = await axios.post('http://localhost:5000/predict', bugReport);
-    // res.status(200).send(response.data);
+    //  const response = await axios.post('http://localhost:5000/predict', bugReport);
+    //  res.status(200).send(response.data);
   } catch (error) {
     console.error('Error communicating with ML service:', error.message);
     res.status(500).send('Error communicating with ML service');

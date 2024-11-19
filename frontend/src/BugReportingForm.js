@@ -2,27 +2,36 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./BugReportingForm.css";
+import BugReportResult from "./BugReportResult";
 
 const BugReportingForm = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    priority: "",
-    environment: "",
+    severity: "",
+    label: "",
     stepsToReproduce: "",
-    expectedOutcome: "",
-    actualOutcome: "",
+    expectedBehavior: "",
+    actualBehavior: "",
+    environment: "",
+    affectedModules: "",
+    attachments: "",
   });
+  const [mlResponse, setMlResponse] = useState({ severity: null, confidence: null });
+  const [showResultPage, setShowResultPage] = useState(false);
+  const [missingFields, setMissingFields] = useState([]);
 
   const steps = [
     { name: "title", label: "Bug Title" },
     { name: "description", label: "Bug Description" },
-    { name: "priority", label: "Priority (Low, Medium, High)" },
-    { name: "environment", label: "Environment (Browser/OS)" },
+    { name: "label", label: "Label (Bug, Feature, Enhancement)" },
     { name: "stepsToReproduce", label: "Steps to Reproduce" },
-    { name: "expectedOutcome", label: "Expected Outcome" },
-    { name: "actualOutcome", label: "Actual Outcome" },
+    { name: "expectedBehavior", label: "Expected Behavior" },
+    { name: "actualBehavior", label: "Actual Behavior" },
+    { name: "environment", label: "Environment (OS, Browser, etc.)" },
+    { name: "affectedModules", label: "Affected Modules/Components" },
+    { name: "attachments", label: "Attachments (Screenshots, Logs, etc.)" },
   ];
 
   const handleNextStep = () => {
@@ -45,26 +54,46 @@ const BugReportingForm = () => {
     }));
   };
 
+  const validateFormData = () => {
+    const missing = [];
+
+    // Check for mandatory fields that are empty
+    if (!formData.title) missing.push("title");
+    if (!formData.description) missing.push("description");
+    if (!formData.stepsToReproduce) missing.push("stepsToReproduce");
+    if (!formData.environment) missing.push("environment");
+
+    setMissingFields(missing);
+    return missing.length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateFormData()) {
+      setStep(0); // Navigate to the first step to start correcting missing fields
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:5000/api/bugs", formData);
-      alert("Bug reported successfully!");
-      // Reset form and step after successful submission
-      setFormData({
-        title: "",
-        description: "",
-        priority: "",
-        environment: "",
-        stepsToReproduce: "",
-        expectedOutcome: "",
-        actualOutcome: "",
+      // Send only the description to the ML model for analysis
+      const response = await axios.post("http://localhost:5000/api/bugs", {
+        description: formData.description,
       });
-      setStep(0);
+      const { severity, confidence } = response.data;
+
+      // Set the ML predicted severity and confidence
+      setMlResponse({ severity, confidence });
+
+      // Show the result page
+      setShowResultPage(true);
     } catch (error) {
       console.error("Error submitting bug report: ", error);
-      alert("Failed to report bug, please try again.");
+      alert("Failed to analyze bug, please try again.");
     }
   };
+
+  if (showResultPage) {
+    return <BugReportResult formData={formData} mlResponse={mlResponse} />;
+  }
 
   return (
     <div className="bug-reporting-container">
@@ -72,13 +101,16 @@ const BugReportingForm = () => {
       <div className="form-step">
         <label htmlFor={steps[step].name} className="form-label">
           {steps[step].label}
+          {missingFields.includes(steps[step].name) && (
+            <span className="error-message"> - This field is required</span>
+          )}
         </label>
         <input
           type="text"
           name={steps[step].name}
           value={formData[steps[step].name]}
           onChange={handleInputChange}
-          className="form-input"
+          className={`form-input ${missingFields.includes(steps[step].name) ? "input-error" : ""}`}
           placeholder={steps[step].label}
         />
       </div>
